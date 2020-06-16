@@ -11,6 +11,7 @@ export default class Note extends React.Component {
     onDeleteNote: () => {},
   }
   static contextType = ApiContext;
+  
 
   handleClickDelete = e => {
     e.preventDefault()
@@ -23,11 +24,9 @@ export default class Note extends React.Component {
       },
     })
       .then(res => {
-        if (!res.ok)
-          return res.json().then(e => Promise.reject(e))
-        return res.json()
-      })
-      .then(() => {
+        if (!res.ok) {
+          throw new Error(res.status)
+        }
         this.context.deleteNote(noteId)
         // allow parent to perform extra behaviour
         this.props.onDeleteNote(noteId)
@@ -39,6 +38,7 @@ export default class Note extends React.Component {
 
   render() {
     const { name, id, modified } = this.props
+    console.log(`This is the id ${id}`)
     return (
       <div className='Note'>
         <h2 className='Note__title'>
